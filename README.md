@@ -4,8 +4,10 @@ This plugin provides a simple breakdown of the damage given and received during 
 
 #### Example output
 
+```
 >> (81 dmg / 1 hits) to (116 dmg / 4 hits) from Player 1 (19 hp)
 >> (419 dmg / 1 hits) to (0 dmg / 0 hits) from Player 2 (0 hp)
+```
 
 ## Credits
 
