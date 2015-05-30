@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <sdktools>
 
-#define PLUGIN_VERSION "1.0.0"
+#define PLUGIN_VERSION "1.0.1"
 
 public Plugin:myinfo =
 {
@@ -60,24 +60,19 @@ public Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 
 BuildDamageString(in_victim)
 {
-	new String:damageReport[512];
 	new OurTeam = GetClientTeam(in_victim);
 	
 	for (new i = 1; i <= MaxClients; i++)
 	{
 		if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) != OurTeam && i != in_victim) {
 			new playerHP = GetClientHealth(i);
-			Format(damageReport, sizeof(damageReport), ">> (%d dmg / %d hits) to (%d dmg / %d hits) from %s (%d hp)\n", g_DamageDone[in_victim][i], g_HitsDone[in_victim][i], g_DamageTaken[in_victim][i], g_HitsTaken[in_victim][i], g_PlayerName[i], playerHP );
+			new String:damageReport[512];
+			
+			Format(damageReport, sizeof(damageReport), ">> (%d dmg / %d hits) to (%d dmg / %d hits) from %s (%d hp) \n", g_DamageDone[in_victim][i], g_HitsDone[in_victim][i], g_DamageTaken[in_victim][i], g_HitsTaken[in_victim][i], g_PlayerName[i], playerHP );
+			if (strcmp(damageReport, "", false) != 0) {
+				PrintToChat(in_victim, "\x04%s", damageReport);
+			}
 		}
-	}
-	
-	DisplayDamageReport(in_victim, damageReport);
-}
-
-DisplayDamageReport(in_victim, String:damageReport[512])
-{
-	if (strcmp(damageReport, "", false) != 0) {
-		PrintToChat(in_victim, "\x04%s", damageReport);
 	}
 }
 
