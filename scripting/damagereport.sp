@@ -64,7 +64,12 @@ BuildDamageString(in_victim)
 	
 	for (new i = 1; i <= MaxClients; i++)
 	{
-		if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i) != OurTeam && i != in_victim) {
+		if (IsClientConnected(i) && IsClientInGame(i) && GetClientTeam(i) != OurTeam && i != in_victim) {
+			// Only show spectators in report if they have given or taken damage
+			if (IsClientObserver(i) && g_HitsTaken[in_victim][i] == 0 && g_HitsDone[in_victim][i] == 0) {
+				continue;
+			}
+		
 			new playerHP = GetClientHealth(i);
 			new String:damageReport[512];
 			
@@ -101,7 +106,7 @@ public Event_RoundEnd (Handle:event, const String:name[], bool:dontBroadcast)
 
 	for (new i = 1; i <= MaxClients; i++)
 	{ 
-		if (IsClientConnected (i) && IsClientInGame (i) && !IsFakeClient (i)) {
+		if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i)) {
 			BuildDamageString(i);
 		}
 	}
