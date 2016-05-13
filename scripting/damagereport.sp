@@ -2,7 +2,7 @@
 #include <sourcemod>
 #include <sdktools>
 
-#define PLUGIN_VERSION "1.0.1"
+#define PLUGIN_VERSION "1.0.2"
 
 public Plugin:myinfo =
 {
@@ -58,7 +58,7 @@ public Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 	g_HitsTaken[victim][attacker]++;
 }
 
-BuildDamageString(in_victim)
+PrintDamageReport(in_victim)
 {
 	new OurTeam = GetClientTeam(in_victim);
 	
@@ -73,7 +73,7 @@ BuildDamageString(in_victim)
 			new playerHP = GetClientHealth(i);
 			new String:damageReport[512];
 			
-			Format(damageReport, sizeof(damageReport), ">> (%d dmg / %d hits) to (%d dmg / %d hits) from %s (%d hp) \n", g_DamageDone[in_victim][i], g_HitsDone[in_victim][i], g_DamageTaken[in_victim][i], g_HitsTaken[in_victim][i], g_PlayerName[i], playerHP );
+			Format(damageReport, sizeof(damageReport), ">> (%d dmg / %d hits) to (%d dmg / %d hits) from %s (%d hp) \n", g_DamageDone[in_victim][i], g_HitsDone[in_victim][i], g_DamageTaken[in_victim][i], g_HitsTaken[in_victim][i], g_PlayerName[i], playerHP);
 			if (strcmp(damageReport, "", false) != 0) {
 				PrintToChat(in_victim, "\x04%s", damageReport);
 			}
@@ -106,11 +106,10 @@ public Event_RoundEnd (Handle:event, const String:name[], bool:dontBroadcast)
 
 	for (new i = 1; i <= MaxClients; i++)
 	{ 
-		if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i)) {
-			BuildDamageString(i);
+		if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i) && !IsClientObserver(i)) {
+			PrintDamageReport(i);
 		}
 	}
-
 }
 
 clearAllDamageData()
