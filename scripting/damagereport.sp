@@ -1,8 +1,9 @@
 #pragma semicolon 1
 #include <sourcemod>
 #include <sdktools>
+#include <cstrike>
 
-#define PLUGIN_VERSION "1.0.2"
+#define PLUGIN_VERSION "1.0.3"
 
 public Plugin:myinfo =
 {
@@ -58,6 +59,12 @@ public Event_PlayerHurt(Handle:event, const String:name[], bool:dontBroadcast)
 	g_HitsTaken[victim][attacker]++;
 }
 
+IsClientPlaying(player)
+{
+	new team = GetClientTeam(player);
+	return (team == CS_TEAM_T || team == CS_TEAM_CT);
+}
+
 PrintDamageReport(in_victim)
 {
 	new OurTeam = GetClientTeam(in_victim);
@@ -66,7 +73,7 @@ PrintDamageReport(in_victim)
 	{
 		if (IsClientConnected(i) && IsClientInGame(i) && GetClientTeam(i) != OurTeam && i != in_victim) {
 			// Only show spectators in report if they have given or taken damage
-			if (IsClientObserver(i) && g_HitsTaken[in_victim][i] == 0 && g_HitsDone[in_victim][i] == 0) {
+			if (!IsClientPlaying(i) && g_HitsTaken[in_victim][i] == 0 && g_HitsDone[in_victim][i] == 0) {
 				continue;
 			}
 		
@@ -94,7 +101,7 @@ public Event_PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 	strcopy(g_PlayerName[client], sizeof(g_PlayerName[]), clientName);
 }
 
-public Event_RoundEnd (Handle:event, const String:name[], bool:dontBroadcast)
+public Event_RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
 	// reason 16 is game commencing
 	// other reasons are real round ends
@@ -106,7 +113,7 @@ public Event_RoundEnd (Handle:event, const String:name[], bool:dontBroadcast)
 
 	for (new i = 1; i <= MaxClients; i++)
 	{ 
-		if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i) && !IsClientObserver(i)) {
+		if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i) && IsClientPlaying(i)) {
 			PrintDamageReport(i);
 		}
 	}
