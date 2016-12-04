@@ -1,5 +1,7 @@
 # SourceMod Damage Report Plugin
 
+[![Build Status](https://jenkins.benscobie.com/job/SourceMod%20Damage%20Report/badge/icon)](https://jenkins.benscobie.com/job/SourceMod%20Damage%20Report/)
+
 This plugin provides a simple breakdown of the damage given and received during a round. The damage report is printed in the chat area when the round is over.
 
 #### Example output
